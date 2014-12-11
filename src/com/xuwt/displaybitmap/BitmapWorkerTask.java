@@ -10,38 +10,33 @@ import java.lang.ref.WeakReference;
 /**
  * Created by xuwt on 2014/12/10.
  */
-public class BitmapWorkerTask extends AsyncTask<Integer,Integer,Bitmap>{
+public class BitmapWorkerTask extends AsyncTask<String,Integer,Bitmap> {
 
     private final WeakReference<ImageView> imageViewReference;
 
     private Context mContext;
 
-    public int data = 0;
-
-    private int width=100;
-    private int height=100;
+    public String url;
 
 
-    private BitmapLruCache mBitmapLruCache;
+    private BitmapStorageCache mImageStorageCache;
 
-    public BitmapWorkerTask(Context context,ImageView imageView) {
+    public BitmapWorkerTask(Context context, ImageView imageView) {
         // Use a WeakReference to ensure the ImageView can be garbage collected
         imageViewReference = new WeakReference(imageView);
 
-        this.mContext=context;
+        this.mContext = context;
 
-        mBitmapLruCache=new BitmapLruCache(mContext);
+        mImageStorageCache = new BitmapStorageCache(mContext);
 
     }
 
     @Override
-    protected Bitmap doInBackground(Integer... params) {
-        data = params[0];
-       /* width=params[1];
-        height=params[2];*/
-        final Bitmap bitmap=
-                BitmapUtils.decodeSampledBitmapFromResource(mContext.getResources(), data, width, height)
-        mBitmapLruCache.addBitmapToMemoryCache(String.valueOf(params[0]), bitmap);
+    protected Bitmap doInBackground(String... params) {
+
+        String url = params[0];
+
+        Bitmap bitmap= mImageStorageCache.getBitmap(url);
 
         return bitmap;
     }
@@ -62,10 +57,11 @@ public class BitmapWorkerTask extends AsyncTask<Integer,Integer,Bitmap>{
         if (imageViewReference != null && bitmap != null) {
             final ImageView imageView = imageViewReference.get();
             final BitmapWorkerTask bitmapWorkerTask =
-                    BitmapLoadUtils.getBitmapWorkerTask(imageView);
+                    Utils.getBitmapWorkerTask(imageView);
             if (this == bitmapWorkerTask && imageView != null) {
                 imageView.setImageBitmap(bitmap);
             }
         }
     }
 }
+
