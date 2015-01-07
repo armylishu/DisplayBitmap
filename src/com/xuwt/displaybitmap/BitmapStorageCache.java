@@ -1,6 +1,5 @@
 package com.xuwt.displaybitmap;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.LruCache;
@@ -21,8 +20,25 @@ public class BitmapStorageCache {
      */
     private DiskLruCache mDiskLruCache;
 
+    private static BitmapStorageCache instance;
+    private final static Object syncLock=new Object();
 
-    public BitmapStorageCache(Context context) {
+    public static BitmapStorageCache getInstance(){
+        if(instance==null){
+            synchronized (syncLock) {
+
+                if(instance==null){
+                    instance=new BitmapStorageCache();
+                }
+
+            }
+        }
+
+        return instance;
+    }
+
+
+    public BitmapStorageCache() {
         // TODO Auto-generated constructor stub
 
         // 获取应用程序最大可用内存
@@ -39,13 +55,13 @@ public class BitmapStorageCache {
 
         try {
             // 获取图片缓存路径
-            File cacheDir = Utils.getDiskCacheDir(context, "thumb");
+            File cacheDir = Utils.getDiskCacheDir(BiamapApplication.mContext, "thumb");
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs();
             }
             // 创建DiskLruCache实例，初始化缓存数据
             mDiskLruCache = DiskLruCache
-                    .open(cacheDir, Utils.getAppVersion(context), 1, 10 * 1024 * 1024);
+                    .open(cacheDir, Utils.getAppVersion(BiamapApplication.mContext), 1, 10 * 1024 * 1024);
         } catch (IOException e) {
             e.printStackTrace();
         }

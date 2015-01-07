@@ -11,10 +11,23 @@ public class BitmapStorageEngine {
     private Context mContext;
 
 
-    public BitmapStorageEngine(Context context) {
-        mImageStorageCache = new BitmapStorageCache(context);
+    public static BitmapStorageEngine mEngine=null;
 
-        this.mContext = context;
+    public static BitmapStorageEngine getInstance(){
+        if(mEngine==null){
+            synchronized (BitmapStorageEngine.class) {
+                if(mEngine==null){
+                    mEngine=new BitmapStorageEngine();
+                }
+            }
+        }
+        return mEngine;
+    }
+
+    public BitmapStorageEngine() {
+        mImageStorageCache = BitmapStorageCache.getInstance();
+
+        this.mContext = BiamapApplication.mContext;
     }
 
     /**

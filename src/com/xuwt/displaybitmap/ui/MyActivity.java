@@ -28,7 +28,7 @@ public class MyActivity extends Activity {
 
         mImageView=(ImageView)findViewById(R.id.imageView);
 
-        mBitmapStrageEngine=new BitmapStorageEngine(mContext);
+        mBitmapStrageEngine=BitmapStorageEngine.getInstance();
         mBitmapStrageEngine.loadBitmaps(IMAGE_URL,mImageView);
 
         //直接设置

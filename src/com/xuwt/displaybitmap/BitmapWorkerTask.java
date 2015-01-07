@@ -27,7 +27,7 @@ public class BitmapWorkerTask extends AsyncTask<String,Integer,Bitmap> {
 
         this.mContext = context;
 
-        mImageStorageCache = new BitmapStorageCache(mContext);
+        mImageStorageCache = BitmapStorageCache.getInstance();
 
     }
 
